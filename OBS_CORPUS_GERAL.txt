@@ -1,0 +1,3 @@
+Os arquivos merged_df_pmi.csv e merged_df_pmi_substituido.csv não estão incluídos neste repositório porque contêm o corpus geral com aproximadamente 146 mil músicas e excedem o tamanho adequado para versionamento direto no GitHub.
+
+Os scripts 01_preprocessamento.py, 02_substituir_alvos.py e 03_calcular_pmi_contexto_2.py mantêm o suporte ao corpus geral quando esses arquivos estiverem disponíveis localmente.
