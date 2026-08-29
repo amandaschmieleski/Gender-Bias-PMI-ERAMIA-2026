@@ -1,8 +1,6 @@
 # Gender Bias PMI-ERAMIA-2026
 
 
-# Gender Bias PMI — ERAMIA 2026
-
 Repositório com códigos, dados auxiliares e arquivos intermediários utilizados no trabalho **“Investigando viés de gênero em letras de músicas brasileiras”**, desenvolvido para o ERAMIA 2026.
 
 O estudo investiga diferenças nas associações contextuais de referentes femininos e masculinos em letras de músicas brasileiras utilizando **Pointwise Mutual Information (PMI)**.
