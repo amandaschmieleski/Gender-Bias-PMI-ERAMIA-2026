@@ -1,17 +1,20 @@
-# Gender Bias PMI-ERAMIA-2026
+# Gender Bias PMI — ERAMIA 2026
 
+Este repositório reúne os códigos, dados auxiliares e arquivos intermediários utilizados no estudo **“Investigando viés de gênero em letras de músicas brasileiras”**, desenvolvido para o ERAMIA 2026.
 
-Repositório com códigos, dados auxiliares e arquivos intermediários utilizados no trabalho **“Investigando viés de gênero em letras de músicas brasileiras”**, desenvolvido para o ERAMIA 2026.
+O trabalho investiga diferenças nas associações contextuais de referentes femininos e masculinos em letras de músicas brasileiras utilizando **Pointwise Mutual Information (PMI)**.
 
-O estudo investiga diferenças nas associações contextuais de referentes femininos e masculinos em letras de músicas brasileiras utilizando **Pointwise Mutual Information (PMI)**.
+A análise é realizada sobre o **corpus completo de 146.023 músicas** e, separadamente, sobre os cinco gêneros musicais mais frequentes da base:
 
-A análise considera o corpus geral e os cinco gêneros musicais mais frequentes da base:
+- Sertanejo: 34.172 músicas
+- MPB: 20.277 músicas
+- Forró: 13.717 músicas
+- Pagode: 9.485 músicas
+- Funk: 6.974 músicas
 
-- Sertanejo
-- MPB
-- Forró
-- Pagode
-- Funk
+Dessa forma, são considerados o comportamento geral do corpus e os padrões observados individualmente em cada um dos cinco recortes musicais.
+
+---
 
 ## Metodologia
 
@@ -24,22 +27,31 @@ A análise utiliza conjuntos de **alvos** femininos e masculinos e seis categori
 - Força
 - Fraqueza
 
-Os conjuntos lexicais foram construídos a partir de três fontes principais:
+Os alvos correspondem a termos que representam referentes femininos ou masculinos nas letras.
 
-1. termos traduzidos e adaptados de Chen et al. (2025);
-2. candidatos extraídos das frases predicativas identificadas por Lopes et al. (2025);
-3. nomes próprios provenientes do ranking de nomes do Censo 2022 do IBGE.
+Como a lista utilizada por Chen et al. (2025) foi originalmente construída para letras em inglês, sua tradução não contempla integralmente formas coloquiais, expressões culturais e variações lexicais características do português brasileiro.
 
-A lista foi ampliada para contemplar melhor formas coloquiais, expressões culturais e variações lexicais características do português brasileiro.
+Por esse motivo, os alvos utilizados neste trabalho combinam:
 
-A versão final contém:
+1. termos traduzidos de Chen et al. (2025);
+2. candidatos identificados nas frases predicativas de Lopes et al. (2025);
+3. nomes próprios provenientes do ranking de nomes do Censo 2022 do IBGE;
+4. expansões manuais de gênero, número, aumentativo e diminutivo.
+
+A versão final utilizada na análise possui:
 
 - **1.569 alvos**
   - 759 femininos
   - 810 masculinos
-- **421 atributos**
 
-Entre os alvos, **1.367 são nomes próprios provenientes do IBGE**, sendo 658 femininos e 709 masculinos.
+Entre esses alvos, **1.367 são nomes próprios provenientes do IBGE**:
+
+- 658 femininos
+- 709 masculinos
+
+Os atributos totalizam **421 termos**, distribuídos entre as seis categorias semânticas utilizadas na análise.
+
+---
 
 ## Estrutura do repositório
 
@@ -72,78 +84,110 @@ Entre os alvos, **1.367 são nomes próprios provenientes do IBGE**, sendo 658 f
     └── sertanejo_pmi_substituido.csv
 ```
 
-## Scripts
+---
 
-### `nomes_ibge_2022.py`
+# Scripts
 
-Obtém os **1.000 nomes femininos e 1.000 nomes masculinos mais frequentes** segundo o ranking do Censo 2022 do IBGE.
+## `nomes_ibge_2022.py`
 
-O script também verifica quais desses nomes estão presentes no corpus de letras.
+Obtém os **1.000 nomes femininos e os 1.000 nomes masculinos mais frequentes** segundo o ranking de nomes do Censo 2022 do IBGE.
 
-O resultado correspondente está disponível em:
+O script também verifica a presença desses nomes no corpus de letras.
+
+O arquivo gerado por essa etapa está disponível em:
 
 ```text
 dados_auxiliares/1000_nomes_femininos_1000_masculinos_ibge.csv
 ```
 
-### `preprocessar_frases_lopes.py`
+Esse arquivo contém os 2.000 candidatos obtidos do ranking do IBGE antes da consolidação da lista final de alvos.
 
-Realiza o pré-processamento das frases predicativas derivadas de Lopes et al. (2025).
+---
 
-Lopes et al. desenvolveram **120 padrões de busca** para localizar sentenças que qualificam referentes femininos ou masculinos em letras de músicas brasileiras.
+## `preprocessar_frases_lopes.py`
 
-Nesta etapa são realizadas, entre outras operações:
+Realiza o pré-processamento das frases predicativas provenientes do trabalho de Lopes et al. (2025).
 
-- remoção de AUX, ADV, DET e PRONOUN conforme os padrões;
-- remoção de pontuação, números e caracteres especiais;
-- aplicação de stopwords do NLTK, spaCy e ISO Stopwords;
+Lopes et al. desenvolveram **120 padrões de busca** para localizar, no corpus de letras, sentenças que qualificassem referentes femininos ou masculinos.
+
+Esses padrões combinam elementos como:
+
+- sujeitos e nomes próprios;
+- verbos auxiliares;
+- advérbios;
+- determinantes;
+- adjetivos;
+- substantivos.
+
+Neste trabalho, as frases recuperadas por esses padrões foram reutilizadas como fonte de candidatos a novos alvos e atributos.
+
+O pré-processamento inclui:
+
+- remoção de AUX, ADV, DET e PRONOUN conforme a estrutura do padrão;
+- remoção de números, pontuação e caracteres especiais;
+- remoção de letras isoladas;
+- aplicação de stopwords do NLTK;
+- aplicação de stopwords do spaCy;
+- aplicação do ISO Stopwords Project;
 - aplicação de listas adicionais de exclusão;
-- remoção de termos já contemplados pela lista traduzida de Chen et al. (2025);
-- remoção de registros vazios e frases duplicadas.
+- remoção de termos já contemplados pela tradução de Chen et al. (2025);
+- remoção de registros vazios;
+- remoção de frases duplicadas.
 
-O processamento utilizado neste estudo resulta em **9.116 frases** destinadas à inspeção de novos alvos e atributos.
+O conjunto utilizado nesta etapa foi reduzido de **31.183 para 9.116 frases**, posteriormente destinadas à inspeção de novos alvos e atributos.
 
-Arquivo correspondente:
+O resultado está disponível em:
 
 ```text
 dados_auxiliares/df_uniao_limpo_lopes_4.csv
 ```
 
-### `01_preprocessamento.py`
+---
 
-Realiza o pré-processamento do corpus de letras.
+## `01_preprocessamento.py`
 
-Entre as principais operações estão:
+Realiza o pré-processamento do corpus de letras musicais e cria os recortes utilizados na análise.
+
+O corpus original de Lopes et al. (2025) possui **146.612 músicas**.
+
+Nesta etapa são realizadas operações como:
 
 - normalização textual;
-- conversão para letras minúsculas;
-- remoção de caracteres não alfabéticos;
-- remoção de músicas duplicadas;
-- criação dos recortes por gênero musical.
+- conversão do conteúdo para letras minúsculas;
+- limpeza das letras;
+- remoção de registros duplicados;
+- separação dos cinco gêneros musicais mais frequentes.
 
-O corpus original possui **146.612 músicas**. Após a remoção de 589 registros duplicados, são mantidas **146.023 músicas**.
+Foram removidas **589 músicas duplicadas**, considerando título, artista e gênero musical, resultando em um corpus geral de:
 
-Também são produzidos os recortes:
+**146.023 músicas**
 
-| Gênero | Músicas |
+A partir desse corpus são produzidos os recortes:
+
+| Recorte | Número de músicas |
 |---|---:|
+| Corpus completo | 146.023 |
 | Sertanejo | 34.172 |
 | MPB | 20.277 |
 | Forró | 13.717 |
 | Pagode | 9.485 |
 | Funk | 6.974 |
 
-Os arquivos desses recortes estão em:
+Os cinco recortes por gênero disponíveis no repositório estão em:
 
 ```text
 dados_processados/
 ```
 
-### `02_substituir_alvos.py`
+O arquivo correspondente ao corpus completo também é produzido pelo script, mas não foi incluído no GitHub devido ao seu tamanho.
 
-Substitui os alvos encontrados nas letras por suas respectivas classificações utilizadas no cálculo da PMI.
+---
 
-As classificações são:
+## `02_substituir_alvos.py`
+
+Substitui, nas letras, os termos identificados como alvos por suas respectivas classificações utilizadas posteriormente no cálculo da PMI.
+
+As oito classificações utilizadas são:
 
 ```text
 ela_similares
@@ -156,54 +200,140 @@ outros_fem
 outros_masc
 ```
 
-Os **1.569 alvos estão codificados diretamente no script**, portanto essa etapa não depende de uma planilha externa para execução.
+Os **1.569 alvos utilizados na análise estão codificados diretamente no script**.
 
-Os arquivos resultantes estão em:
+Por esse motivo, essa etapa não depende de uma planilha externa para localizar ou classificar os alvos.
+
+Os arquivos gerados estão disponíveis em:
 
 ```text
 dados_substituidos/
 ```
 
-### `03_calcular_pmi_contexto_2.py`
-
-Calcula a **Pointwise Mutual Information (PMI)** entre os conjuntos de alvos femininos e masculinos e as seis categorias de atributos.
-
-A análise utiliza uma janela de contexto de:
+Por exemplo:
 
 ```text
-2 tokens anteriores + alvo + 2 tokens posteriores
+dados_processados/sertanejo_pmi.csv
 ```
 
-O alvo é removido do contexto antes da contagem.
-
-Os atributos são lematizados utilizando:
+é transformado em:
 
 ```text
-spaCy: pt_core_news_sm
+dados_substituidos/sertanejo_pmi_substituido.csv
+```
+
+---
+
+## `03_calcular_pmi_contexto_2.py`
+
+Realiza o cálculo da **Pointwise Mutual Information (PMI)** entre os conjuntos de referentes femininos e masculinos e as seis categorias de atributos.
+
+São consideradas as categorias:
+
+```text
+Agradável
+Desagradável
+Aparência
+Inteligência
+Força
+Fraqueza
 ```
 
 Os **421 atributos utilizados na análise estão codificados diretamente neste script**.
 
-A PMI é calculada inicialmente para cada atributo e, posteriormente, os resultados são agregados pela média de cada categoria.
-
-## Lista consolidada de alvos e atributos
-
-O arquivo:
+A análise utiliza uma janela contextual de dois tokens anteriores e dois posteriores a cada ocorrência de alvo:
 
 ```text
-dados_auxiliares/eramia_pmi_atributos_alvos.xlsx
+token -2 | token -1 | ALVO | token +1 | token +2
 ```
 
-contém a versão consolidada das listas utilizadas no estudo.
+O próprio alvo é retirado do contexto utilizado para a contagem.
 
-Ele possui:
+Os contextos e atributos são processados com o modelo em português:
+
+```text
+pt_core_news_sm
+```
+
+do spaCy.
+
+A PMI é calculada individualmente para cada atributo. Em seguida, os valores dos atributos pertencentes à mesma categoria são agregados pela média.
+
+O script executa a análise tanto para:
+
+- o corpus completo;
+- sertanejo;
+- MPB;
+- forró;
+- pagode;
+- funk.
+
+---
+
+# Dados auxiliares
+
+## `1000_nomes_femininos_1000_masculinos_ibge.csv`
+
+Contém os:
+
+- 1.000 nomes femininos mais frequentes;
+- 1.000 nomes masculinos mais frequentes;
+
+obtidos a partir do ranking de nomes do Censo 2022 do IBGE.
+
+O arquivo registra também a presença dos nomes no corpus de letras.
+
+Após o cruzamento com o corpus, a consolidação e a remoção de ambiguidades, **1.367 nomes próprios** integram a lista final de alvos:
+
+- 658 femininos;
+- 709 masculinos.
+
+---
+
+## `df_uniao_limpo_lopes_4.csv`
+
+Contém as **9.116 frases predicativas** resultantes do pré-processamento realizado sobre o conjunto utilizado a partir de Lopes et al. (2025).
+
+Essas frases foram utilizadas para a inspeção de candidatos a novos alvos e atributos.
+
+---
+
+## `eramia_pmi_atributos_alvos.xlsx`
+
+Contém a versão consolidada das listas de alvos e atributos utilizadas no estudo.
+
+A planilha possui:
 
 - **1.569 alvos**
 - **421 atributos**
 
-Os valores dessa planilha correspondem às listas codificadas nos scripts utilizados na análise final.
+Os alvos estão distribuídos nas classificações:
 
-## Arquivos processados e substituídos
+| Classificação | Feminino | Masculino | Total |
+|---|---:|---:|---:|
+| nomes | 658 | 709 | 1.367 |
+| similares | 44 | 50 | 94 |
+| família | 41 | 37 | 78 |
+| outros | 16 | 14 | 30 |
+| **Total** | **759** | **810** | **1.569** |
+
+Os atributos estão distribuídos da seguinte forma:
+
+| Categoria | Total |
+|---|---:|
+| Agradável | 106 |
+| Desagradável | 139 |
+| Aparência | 70 |
+| Inteligência | 35 |
+| Força | 37 |
+| Fraqueza | 34 |
+| **Total** | **421** |
+
+As listas presentes nessa planilha correspondem às listas codificadas nos scripts utilizados na execução final.
+
+---
+
+# Dados processados
 
 A pasta:
 
@@ -211,7 +341,21 @@ A pasta:
 dados_processados/
 ```
 
-contém as letras após o pré-processamento e separação dos cinco gêneros musicais analisados.
+contém os cinco recortes por gênero musical após a etapa inicial de pré-processamento:
+
+```text
+forro_pmi.csv
+funk_pmi.csv
+mpb_pmi.csv
+pagode_pmi.csv
+sertanejo_pmi.csv
+```
+
+Esses arquivos ainda apresentam os alvos em sua forma textual original.
+
+---
+
+# Dados com alvos substituídos
 
 A pasta:
 
@@ -219,62 +363,102 @@ A pasta:
 dados_substituidos/
 ```
 
-contém os mesmos recortes após a substituição dos alvos por suas classificações PMI.
-
-Por exemplo:
+contém os cinco recortes após a substituição dos alvos por suas classificações de gênero:
 
 ```text
-sertanejo_pmi.csv
-```
-
-é transformado em:
-
-```text
+forro_pmi_substituido.csv
+funk_pmi_substituido.csv
+mpb_pmi_substituido.csv
+pagode_pmi_substituido.csv
 sertanejo_pmi_substituido.csv
 ```
 
-antes do cálculo da PMI.
+Esses arquivos constituem as entradas utilizadas pelo script de cálculo da PMI para os cinco gêneros musicais.
 
-## Corpus geral
+---
 
-Os arquivos intermediários correspondentes ao **corpus completo de 146.023 músicas** não estão armazenados neste repositório devido ao seu tamanho.
+# Corpus completo
 
-São eles:
+Embora o estudo também analise o **corpus completo de 146.023 músicas**, seus arquivos intermediários não estão armazenados neste repositório devido ao tamanho.
+
+Os arquivos produzidos localmente são:
 
 ```text
 merged_df_pmi.csv
 merged_df_pmi_substituido.csv
 ```
 
-Esses arquivos são gerados localmente pelos mesmos scripts utilizados para produzir os recortes por gênero.
+O primeiro corresponde ao corpus completo após o pré-processamento.
 
-Os códigos permanecem preparados para executar tanto a análise do corpus completo quanto a dos cinco gêneros musicais.
+O segundo corresponde ao mesmo corpus após a substituição dos alvos pelas classificações utilizadas na PMI.
 
-## Ordem de execução
+Ambos são gerados pelos mesmos scripts disponibilizados neste repositório.
 
-Para reproduzir o fluxo principal da análise:
+Portanto, a ausência desses dois arquivos no GitHub **não significa que o corpus completo tenha sido excluído da análise**. Os resultados do estudo consideram:
+
+```text
+Corpus completo
++ Sertanejo
++ MPB
++ Forró
++ Pagode
++ Funk
+```
+
+---
+
+# Fluxo principal da análise
+
+O pipeline principal pode ser representado da seguinte forma:
 
 ```text
 Corpus original
-      ↓
+146.612 músicas
+        │
+        ▼
 01_preprocessamento.py
-      ↓
-dados_processados/
-      ↓
+        │
+        ├── Corpus completo: 146.023 músicas
+        │
+        ├── Sertanejo
+        ├── MPB
+        ├── Forró
+        ├── Pagode
+        └── Funk
+        │
+        ▼
 02_substituir_alvos.py
-      ↓
-dados_substituidos/
-      ↓
+        │
+        ▼
+Substituição dos 1.569 alvos
+pelas classificações PMI
+        │
+        ▼
 03_calcular_pmi_contexto_2.py
-      ↓
-Resultados de PMI
+        │
+        ▼
+PMI por categoria
+para feminino e masculino
+        │
+        ▼
+Resultados para:
+Corpus completo + 5 gêneros musicais
 ```
 
-Os scripts `nomes_ibge_2022.py` e `preprocessar_frases_lopes.py` correspondem às etapas auxiliares utilizadas durante a construção das listas de alvos e atributos.
+Os scripts:
 
-## Dependências
+```text
+nomes_ibge_2022.py
+preprocessar_frases_lopes.py
+```
 
-O projeto utiliza Python e as seguintes bibliotecas principais:
+correspondem a etapas auxiliares utilizadas durante a construção e validação dos conjuntos lexicais.
+
+---
+
+# Dependências
+
+O projeto utiliza Python e, entre outras, as seguintes bibliotecas:
 
 ```text
 pandas
@@ -287,34 +471,44 @@ requests
 selenium
 ```
 
-Instalação das bibliotecas:
+As principais dependências podem ser instaladas com:
 
 ```bash
 pip install pandas numpy matplotlib spacy nltk stopwordsiso requests selenium
 ```
 
-Instalação do modelo de português do spaCy:
+Também é necessário instalar o modelo de português do spaCy:
 
 ```bash
 python -m spacy download pt_core_news_sm
 ```
 
-## Observação sobre os caminhos dos arquivos
+---
 
-Os scripts foram desenvolvidos para execução local e alguns deles utilizam caminhos definidos no início do código, como:
+# Caminhos dos arquivos
+
+Os scripts foram desenvolvidos para execução local.
+
+Alguns códigos utilizam caminhos definidos no início do arquivo, por exemplo:
 
 ```python
 PASTA = Path(r"D:\Downloads")
 ```
 
-Antes da execução em outro computador, esses caminhos devem ser ajustados para o diretório onde os dados estiverem armazenados.
+Antes de executar o projeto em outro computador, esses caminhos devem ser ajustados para o local em que os arquivos estiverem armazenados.
 
-## Referências principais
+---
+
+# Referências principais
 
 - Betti, L., Abrate, C. e Kaltenbrunner, A. (2023). *Large scale analysis of gender bias and sexism in song lyrics*. EPJ Data Science.
+
 - Chen, D. et al. (2025). *Tuning into Bias: A Computational Study of Gender Bias in Song Lyrics*. LaTeCH-CLfL 2025.
+
 - Lopes, J. N. S., Firmino, V. P. e Reis, V. Q. (2025). *Muses or Stereotypes? Identifying Historical Patterns of Sexism in a Corpus of Brazilian Lyrics*. Journal on Interactive Systems.
+
 - Stanczak, K. e Augenstein, I. (2021). *A Survey on Gender Bias in Natural Language Processing*.
 
 
-Este repositório contém os materiais utilizados no artigo submetido ao **ERAMIA 2026** sobre análise de viés de gênero em letras de músicas brasileiras por meio de PMI.
+
+Este repositório disponibiliza os materiais computacionais e dados derivados utilizados no estudo sobre **viés de gênero em letras de músicas brasileiras por meio de PMI**, considerando conjuntamente o corpus completo e análises específicas dos gêneros sertanejo, MPB, forró, pagode e funk.
